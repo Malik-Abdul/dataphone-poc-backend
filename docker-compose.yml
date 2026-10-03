@@ -1,0 +1,74 @@
+services:
+  # ----------------------------
+  # Redis Service
+  # ----------------------------
+  redis:
+    # Official Redis image.
+    # "7-alpine" uses Redis v7 on Alpine Linux,
+    # making it smaller than the full Redis image.
+    image: redis:7-alpine
+
+    # Friendly container name.
+    container_name: dataphone_poc_redis
+
+    # Automatically restart unless explicitly stopped.
+    restart: unless-stopped
+
+    # Host Port : Container Port
+    # Access Redis from your machine on localhost:6379.
+    ports:
+      - '6379:6379'
+
+    # Enable Redis Append Only File (AOF) persistence.
+    command:
+      - redis-server
+      - --appendonly
+      - 'yes'
+
+    # Persist Redis data outside the container.
+    volumes:
+      - redis-data:/data
+
+  # ----------------------------
+  # PostgreSQL Service
+  # ----------------------------
+  postgres:
+    # Official PostgreSQL image.
+    image: postgres:17
+
+    # Friendly container name.
+    container_name: dataphone_poc_postgres
+
+    # Automatically restart unless explicitly stopped.
+    restart: unless-stopped
+
+    # Host Port : Container Port
+    # 5433 (Host) ---> 5432 (Docker PostgreSQL)
+    ports:
+      - '5433:5432'
+
+    # PostgreSQL environment variables.
+    environment:
+      # PostgreSQL username.
+      POSTGRES_USER: dataphone
+
+      # PostgreSQL password.
+      POSTGRES_PASSWORD: dataphone
+
+      # Database created automatically on first startup.
+      POSTGRES_DB: dataphone_poc
+
+    # Persist PostgreSQL data outside the container.
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+# ----------------------------
+# Named Volumes
+# ----------------------------
+
+volumes:
+  # Redis persistent storage.
+  redis-data:
+
+  # PostgreSQL persistent storage.
+  postgres-data:
