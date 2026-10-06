@@ -17,7 +17,7 @@ services:
     # Host Port : Container Port
     # Access Redis from your machine on localhost:6379.
     ports:
-      - '6379:6379'
+      - '6380:6379'
 
     # Enable Redis Append Only File (AOF) persistence.
     command:
@@ -45,7 +45,7 @@ services:
     # Host Port : Container Port
     # 5433 (Host) ---> 5432 (Docker PostgreSQL)
     ports:
-      - '5433:5432'
+      - '5435:5432'
 
     # PostgreSQL environment variables.
     environment:
