@@ -6,6 +6,17 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { UsersModule } from './users/users.module';
+import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
+
+import { DevModule } from './dev/dev.module';
+import { RedisModule } from './redis/redis.module';
+import { AuthModule } from './auth/auth.module';
+import { AppThrottlerModule } from './throttler/throttler.module';
+
+import { AppConfigModule } from './common/config/app-config.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +37,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         synchronize: true,
       }),
     }),
+    UsersModule,
+    RolesModule,
+    PermissionsModule,
+    DevModule,
+    RedisModule,
+    AuthModule,
+    AppThrottlerModule,
+    AppConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],
