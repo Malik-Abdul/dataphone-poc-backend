@@ -102,4 +102,16 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 ```bash
 npm i --save @nestjs/config
 npm install --save @nestjs/typeorm typeorm pg
+
+
+
+
+docker compose down -v
+docker compose up -d
+npm run start:dev
+npm run seed
+
+
+
+docker exec -it dataphone_poc_postgres psql -U dataphone -d dataphone_poc
 ```
