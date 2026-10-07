@@ -268,4 +268,137 @@ export class PhoneNumbersService {
 
     return numbers.length;
   }
+  // src/phone-numbers/phone-numbers.service.ts
+
+  async findAvailableNumbers(filters?: {
+    search?: string;
+    carrierId?: string;
+    city?: string;
+    state?: string;
+  }) {
+    const query = this.phoneNumberRepository
+      .createQueryBuilder('phoneNumber')
+      .leftJoinAndSelect('phoneNumber.carrier', 'carrier');
+
+    query.andWhere('phoneNumber.status = :status', {
+      status: PhoneNumberStatus.UNASSIGNED,
+    });
+
+    if (filters?.search) {
+      query.andWhere('phoneNumber.phone_number ILIKE :search', {
+        search: `%${filters.search}%`,
+      });
+    }
+
+    if (filters?.carrierId) {
+      query.andWhere('phoneNumber.carrier_id = :carrierId', {
+        carrierId: filters.carrierId,
+      });
+    }
+
+    if (filters?.city) {
+      query.andWhere('phoneNumber.city ILIKE :city', {
+        city: `%${filters.city}%`,
+      });
+    }
+
+    if (filters?.state) {
+      query.andWhere('phoneNumber.state ILIKE :state', {
+        state: `%${filters.state}%`,
+      });
+    }
+
+    return query.orderBy('phoneNumber.phone_number', 'ASC').getMany();
+  }
+
+  async purchase(
+    phoneNumberId: string,
+    customerId: string,
+    performedBy?: string,
+  ) {
+    const phoneNumber = await this.phoneNumberRepository.findOne({
+      where: { id: phoneNumberId },
+      relations: {
+        carrier: true,
+      },
+    });
+
+    if (!phoneNumber) {
+      throw new NotFoundException(`Phone number not found: ${phoneNumberId}`);
+    }
+
+    if (phoneNumber.status !== PhoneNumberStatus.UNASSIGNED) {
+      throw new BadRequestException(
+        'Phone number is not available for purchase',
+      );
+    }
+
+    const customerRepository =
+      this.phoneNumberRepository.manager.getRepository(Customer);
+
+    const customer = await customerRepository.findOne({
+      where: { id: customerId },
+    });
+
+    if (!customer) {
+      throw new NotFoundException(`Customer not found: ${customerId}`);
+    }
+
+    phoneNumber.status = PhoneNumberStatus.ASSIGNED;
+    phoneNumber.customerId = customer.id;
+
+    const savedNumber = await this.phoneNumberRepository.save(phoneNumber);
+
+    await this.historyService.create({
+      phoneNumberId: savedNumber.id,
+      phoneNumber: savedNumber.phoneNumber,
+      action: HistoryAction.BOUGHT,
+      performedBy,
+      metadata: {
+        carrierId: savedNumber.carrierId,
+        carrier: savedNumber.carrier?.name,
+      },
+    });
+
+    await this.historyService.create({
+      phoneNumberId: savedNumber.id,
+      phoneNumber: savedNumber.phoneNumber,
+      action: HistoryAction.ASSIGNED,
+      toCustomerId: customer.id,
+      performedBy,
+    });
+
+    return savedNumber;
+  }
+  async disconnect(phoneNumberId: string, performedBy?: string) {
+    const phoneNumber = await this.phoneNumberRepository.findOne({
+      where: { id: phoneNumberId },
+    });
+
+    if (!phoneNumber) {
+      throw new NotFoundException(`Phone number not found: ${phoneNumberId}`);
+    }
+
+    if (phoneNumber.status === PhoneNumberStatus.DISCONNECTED) {
+      throw new BadRequestException('Phone number is already disconnected');
+    }
+
+    const previousCustomerId = phoneNumber.customerId;
+
+    phoneNumber.status = PhoneNumberStatus.DISCONNECTED;
+
+    phoneNumber.customerId = undefined;
+
+    const savedNumber = await this.phoneNumberRepository.save(phoneNumber);
+
+    await this.historyService.create({
+      phoneNumberId: savedNumber.id,
+      phoneNumber: savedNumber.phoneNumber,
+      action: HistoryAction.DISCONNECTED,
+      fromCustomerId: previousCustomerId,
+      performedBy,
+    });
+
+    return savedNumber;
+  }
 }
