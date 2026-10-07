@@ -120,3 +120,49 @@ docker exec -it dataphone_poc_postgres psql -U dataphone -d dataphone_poc
 
 
 ```
+
+## List of Modules
+
+[x] Authentication
+[x] Authorization / RBAC
+[x] User CRUD
+[x] User Profile
+
+[x] Carrier Module
+[x] Peerless Mock
+[x] BulkVS Mock
+[x] Bandwidth Mock
+[x] Carrier Sync
+
+[x] Centralized Number Inventory
+[x] Search
+[x] Filters
+[x] Customer Filter
+[x] Carrier Filter
+[x] Status Filter
+[x] Unassigned Filter
+
+[x] Customer Module
+[x] Customer → Numbers
+
+[x] Assign
+[x] Move
+[x] Release
+[x] Disconnect
+
+[x] Immutable History
+[x] History by Number
+
+[x] Available Number Search
+[x] Mock Purchase
+
+[x] Portability Check
+[x] Port Request
+[x] Submit
+[x] FOC / Confirm Date
+[x] Reject
+[x] Resubmit
+[x] Cancel
+[x] Complete Port-In
+
+[x] CSV Export
