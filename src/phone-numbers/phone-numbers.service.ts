@@ -401,4 +401,48 @@ export class PhoneNumbersService {
 
     return savedNumber;
   }
+
+  async exportCsv(filters?: {
+    search?: string;
+    customerId?: string;
+    customer?: string;
+    carrierId?: string;
+    status?: PhoneNumberStatus;
+    unassigned?: boolean;
+  }) {
+    const phoneNumbers = await this.findAll(filters);
+
+    const headers = [
+      'Phone Number',
+      'Carrier',
+      'Customer',
+      'Status',
+      'City',
+      'State',
+      'Date Obtained',
+      'Created At',
+    ];
+
+    const rows = phoneNumbers.map((phoneNumber) => [
+      phoneNumber.phoneNumber,
+      phoneNumber.carrier?.name ?? '',
+      phoneNumber.customer?.name ?? '',
+      phoneNumber.status,
+      phoneNumber.city ?? '',
+      phoneNumber.state ?? '',
+      phoneNumber.dateObtained ? phoneNumber.dateObtained.toISOString() : '',
+      phoneNumber.createdAt ? phoneNumber.createdAt.toISOString() : '',
+    ]);
+
+    const escapeCsvValue = (value: string) => {
+      return `"${String(value).replace(/"/g, '""')}"`;
+    };
+
+    const csv = [
+      headers.map(escapeCsvValue).join(','),
+      ...rows.map((row) => row.map(escapeCsvValue).join(',')),
+    ].join('\n');
+
+    return csv;
+  }
 }
