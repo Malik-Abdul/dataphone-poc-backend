@@ -4,6 +4,7 @@ import AppDataSource from '../data-source';
 import { seedPermissions } from './permission.seed';
 import { seedRoles } from './role.seed';
 import { seedUsers } from './user.seed';
+import { seedCarriers } from './carrier.seed';
 
 async function runSeeds() {
   try {
@@ -12,6 +13,7 @@ async function runSeeds() {
     await seedPermissions(AppDataSource);
     await seedRoles(AppDataSource);
     await seedUsers(AppDataSource);
+    await seedCarriers(AppDataSource);
 
     console.log('✅ Seeding completed successfully');
   } catch (error) {

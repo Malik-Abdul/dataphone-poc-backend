@@ -114,4 +114,9 @@ npm run seed
 
 
 docker exec -it dataphone_poc_postgres psql -U dataphone -d dataphone_poc
+
+
+# nest g module carrier && nest g service carrier && nest g controller carrier
+
+
 ```

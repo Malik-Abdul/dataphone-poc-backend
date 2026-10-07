@@ -16,6 +16,10 @@ import { AuthModule } from './auth/auth.module';
 import { AppThrottlerModule } from './throttler/throttler.module';
 
 import { AppConfigModule } from './common/config/app-config.module';
+import { CarrierModule } from './carrier/carrier.module';
+import { PhoneNumbersModule } from './phone-numbers/phone-numbers.module';
+import { CustomersModule } from './customers/customers.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -45,6 +49,10 @@ import { AppConfigModule } from './common/config/app-config.module';
     AuthModule,
     AppThrottlerModule,
     AppConfigModule,
+    CarrierModule,
+    PhoneNumbersModule,
+    CustomersModule,
+    HistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
