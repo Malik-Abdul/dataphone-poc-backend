@@ -32,7 +32,9 @@ export class CustomersService {
         id,
       },
       relations: {
-        phoneNumbers: true,
+        phoneNumbers: {
+          carrier: true,
+        },
       },
     });
 

@@ -20,6 +20,7 @@ import { CarrierModule } from './carrier/carrier.module';
 import { PhoneNumbersModule } from './phone-numbers/phone-numbers.module';
 import { CustomersModule } from './customers/customers.module';
 import { HistoryModule } from './history/history.module';
+import { PortRequestsModule } from './port-requests/port-requests.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { HistoryModule } from './history/history.module';
     PhoneNumbersModule,
     CustomersModule,
     HistoryModule,
+    PortRequestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
