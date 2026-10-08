@@ -17,7 +17,7 @@ async function bootstrap() {
 
   // CORS configuration is appropriate for your Next.js frontend on port 3013:
   app.enableCors({
-    origin: 'http://localhost:3013', // Your Next.js app
+    origin: 'http://localhost:3001', // Your Next.js app
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
